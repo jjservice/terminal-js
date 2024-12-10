@@ -8,6 +8,12 @@
         .cart-item {
             display: flex;
             justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .cart-item img {
+            width: 50px;
+            height: auto;
+            margin-right: 10px;
         }
         .cart-item span {
             margin-right: 10px;
@@ -50,7 +56,7 @@
                     <option value="L">Large</option>
                 </select>
                 <input type="number" class="quantity" value="1" min="1">
-                <button class="add-to-cart" data-name="Item 1" data-price="10">Add to Cart</button>
+                <button class="add-to-cart" data-name="Item 1" data-price="10" data-image="https://via.placeholder.com/100">Add to Cart</button>
             </div>
         </div>
         <div class="product" data-id="2">
@@ -64,7 +70,7 @@
                     <option value="L">Large</option>
                 </select>
                 <input type="number" class="quantity" value="1" min="1">
-                <button class="add-to-cart" data-name="Item 2" data-price="20">Add to Cart</button>
+                <button class="add-to-cart" data-name="Item 2" data-price="20" data-image="https://via.placeholder.com/100">Add to Cart</button>
             </div>
         </div>
         <div class="product" data-id="3">
@@ -78,7 +84,7 @@
                     <option value="L">Large</option>
                 </select>
                 <input type="number" class="quantity" value="1" min="1">
-                <button class="add-to-cart" data-name="Item 3" data-price="15">Add to Cart</button>
+                <button class="add-to-cart" data-name="Item 3" data-price="15" data-image="https://via.placeholder.com/100">Add to Cart</button>
             </div>
         </div>
     </div>
@@ -147,10 +153,11 @@
                 var price = parseFloat(button.getAttribute('data-price'));
                 var quantity = parseInt(product.querySelector('.quantity').value);
                 var size = product.querySelector('.size').value;
+                var image = button.getAttribute('data-image');
                 var id = product.getAttribute('data-id');
 
                 // Add product to the cart array
-                var cartItem = { id, name, price, quantity, size, totalPrice: price * quantity };
+                var cartItem = { id, name, price, quantity, size, image, totalPrice: price * quantity };
                 cart.push(cartItem);
                 updateCart();
             });
@@ -165,6 +172,7 @@
                 var cartItem = document.createElement('div');
                 cartItem.classList.add('cart-item');
                 cartItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
                     <span>${item.name} - ${item.size}</span>
                     <span>Qty: ${item.quantity}</span>
                     <span>$${item.totalPrice.toFixed(2)}</span>
@@ -241,5 +249,6 @@
     </script>
 </body>
 </html>
+
 
 
