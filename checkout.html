@@ -20,6 +20,18 @@
             justify-content: space-between;
             margin-bottom: 10px;
         }
+        .product img {
+            width: 100px;
+            height: auto;
+            margin-right: 10px;
+        }
+        .product-details {
+            display: flex;
+            flex-direction: column;
+        }
+        .product-details select, .product-details input {
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -28,19 +40,46 @@
     <div class="products">
         <h2>Products</h2>
         <div class="product">
-            <span>Item 1</span>
-            <span>$10.00</span>
-            <button class="add-to-cart" data-name="Item 1" data-price="10">Add to Cart</button>
+            <img src="https://via.placeholder.com/100" alt="Item 1">
+            <div class="product-details">
+                <span>Item 1</span>
+                <span>$10.00</span>
+                <select class="size">
+                    <option value="S">Small</option>
+                    <option value="M">Medium</option>
+                    <option value="L">Large</option>
+                </select>
+                <input type="number" class="quantity" value="1" min="1">
+                <button class="add-to-cart" data-name="Item 1" data-price="10">Add to Cart</button>
+            </div>
         </div>
         <div class="product">
-            <span>Item 2</span>
-            <span>$20.00</span>
-            <button class="add-to-cart" data-name="Item 2" data-price="20">Add to Cart</button>
+            <img src="https://via.placeholder.com/100" alt="Item 2">
+            <div class="product-details">
+                <span>Item 2</span>
+                <span>$20.00</span>
+                <select class="size">
+                    <option value="S">Small</option>
+                    <option value="M">Medium</option>
+                    <option value="L">Large</option>
+                </select>
+                <input type="number" class="quantity" value="1" min="1">
+                <button class="add-to-cart" data-name="Item 2" data-price="20">Add to Cart</button>
+            </div>
         </div>
         <div class="product">
-            <span>Item 3</span>
-            <span>$15.00</span>
-            <button class="add-to-cart" data-name="Item 3" data-price="15">Add to Cart</button>
+            <img src="https://via.placeholder.com/100" alt="Item 3">
+            <div class="product-details">
+                <span>Item 3</span>
+                <span>$15.00</span>
+                <select class="size">
+                    <option value="S">Small</option>
+                    <option value="M">Medium</option>
+                    <option value="L">Large</option>
+                </select>
+                <input type="number" class="quantity" value="1" min="1">
+                <button class="add-to-cart" data-name="Item 3" data-price="15">Add to Cart</button>
+            </div>
         </div>
     </div>
 
@@ -105,8 +144,11 @@
             button.addEventListener('click', function() {
                 var name = button.getAttribute('data-name');
                 var price = parseFloat(button.getAttribute('data-price'));
-                
-                cart.push({name: name, price: price});
+                var quantity = parseInt(button.previousElementSibling.previousElementSibling.value);
+                var size = button.previousElementSibling.value;
+
+                // Add item to cart
+                cart.push({name: name, price: price, quantity: quantity, size: size});
                 updateCart();
             });
         });
@@ -119,10 +161,15 @@
             cart.forEach(function(item, index) {
                 var cartItem = document.createElement('div');
                 cartItem.classList.add('cart-item');
-                cartItem.innerHTML = `<span>${item.name}</span><span>$${item.price.toFixed(2)}</span><button class="remove-item" data-index="${index}">Remove</button>`;
+                cartItem.innerHTML = `
+                    <span>${item.name} - ${item.size}</span>
+                    <span>Qty: ${item.quantity}</span>
+                    <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                    <button class="remove-item" data-index="${index}">Remove</button>
+                `;
                 cartItemsContainer.appendChild(cartItem);
 
-                total += item.price;
+                total += item.price * item.quantity;
             });
 
             totalElement.textContent = 'Total: $' + total.toFixed(2);
@@ -191,3 +238,4 @@
     </script>
 </body>
 </html>
+
