@@ -15,26 +15,43 @@
         .cart {
             margin-bottom: 20px;
         }
+        .product {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Product Listing -->
+    <div class="products">
+        <h2>Products</h2>
+        <div class="product">
+            <span>Item 1</span>
+            <span>$10.00</span>
+            <button class="add-to-cart" data-name="Item 1" data-price="10">Add to Cart</button>
+        </div>
+        <div class="product">
+            <span>Item 2</span>
+            <span>$20.00</span>
+            <button class="add-to-cart" data-name="Item 2" data-price="20">Add to Cart</button>
+        </div>
+        <div class="product">
+            <span>Item 3</span>
+            <span>$15.00</span>
+            <button class="add-to-cart" data-name="Item 3" data-price="15">Add to Cart</button>
+        </div>
+    </div>
 
     <!-- Shopping Cart -->
     <div class="cart">
         <h2>Your Cart</h2>
         <div class="cart-items">
-            <!-- Example cart items -->
-            <div class="cart-item">
-                <span>Item 1</span>
-                <span>$10.00</span>
-            </div>
-            <div class="cart-item">
-                <span>Item 2</span>
-                <span>$20.00</span>
-            </div>
+            <!-- Cart items will be dynamically added here -->
         </div>
         <div class="total">
-            <h3>Total: $30.00</h3>
+            <h3>Total: $0.00</h3>
         </div>
     </div>
 
@@ -78,9 +95,50 @@
         // Mount the card element to the DOM
         card.mount('#card-element');
 
+        // Shopping Cart Management
+        var cart = [];
+        var cartItemsContainer = document.querySelector('.cart-items');
+        var totalElement = document.querySelector('.total h3');
+
+        // Add product to the cart
+        document.querySelectorAll('.add-to-cart').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var name = button.getAttribute('data-name');
+                var price = parseFloat(button.getAttribute('data-price'));
+                
+                cart.push({name: name, price: price});
+                updateCart();
+            });
+        });
+
+        // Update cart display and total
+        function updateCart() {
+            cartItemsContainer.innerHTML = ''; // Clear cart items display
+            var total = 0;
+
+            cart.forEach(function(item, index) {
+                var cartItem = document.createElement('div');
+                cartItem.classList.add('cart-item');
+                cartItem.innerHTML = `<span>${item.name}</span><span>$${item.price.toFixed(2)}</span><button class="remove-item" data-index="${index}">Remove</button>`;
+                cartItemsContainer.appendChild(cartItem);
+
+                total += item.price;
+            });
+
+            totalElement.textContent = 'Total: $' + total.toFixed(2);
+
+            // Attach event listeners to remove buttons
+            document.querySelectorAll('.remove-item').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var index = button.getAttribute('data-index');
+                    cart.splice(index, 1); // Remove item from cart
+                    updateCart(); // Re-render cart
+                });
+            });
+        }
+
         // Handle form submission
         var form = document.getElementById('payment-form');
-        var submitButton = document.getElementById('submit');
         
         form.addEventListener('submit', function(event) {
             event.preventDefault();
@@ -103,7 +161,7 @@
                     var errorElement = document.getElementById('card-errors');
                     errorElement.textContent = result.error.message;
                 } else {
-                    // Send the PaymentMethod ID and customer details to your server
+                    // Send the PaymentMethod ID and customer details along with cart
                     fetch('/your-server-endpoint', {
                         method: 'POST',
                         headers: {
@@ -114,10 +172,7 @@
                             name: name,
                             address: address,
                             phone: phone,
-                            cart: [
-                                { item: "Item 1", price: 10 },
-                                { item: "Item 2", price: 20 }
-                            ]
+                            cart: cart
                         }),
                     }).then(function(response) {
                         return response.json();
