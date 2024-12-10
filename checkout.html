@@ -39,7 +39,7 @@
     <!-- Product Listing -->
     <div class="products">
         <h2>Products</h2>
-        <div class="product">
+        <div class="product" data-id="1">
             <img src="https://via.placeholder.com/100" alt="Item 1">
             <div class="product-details">
                 <span>Item 1</span>
@@ -53,7 +53,7 @@
                 <button class="add-to-cart" data-name="Item 1" data-price="10">Add to Cart</button>
             </div>
         </div>
-        <div class="product">
+        <div class="product" data-id="2">
             <img src="https://via.placeholder.com/100" alt="Item 2">
             <div class="product-details">
                 <span>Item 2</span>
@@ -67,7 +67,7 @@
                 <button class="add-to-cart" data-name="Item 2" data-price="20">Add to Cart</button>
             </div>
         </div>
-        <div class="product">
+        <div class="product" data-id="3">
             <img src="https://via.placeholder.com/100" alt="Item 3">
             <div class="product-details">
                 <span>Item 3</span>
@@ -142,13 +142,16 @@
         // Add product to the cart
         document.querySelectorAll('.add-to-cart').forEach(function(button) {
             button.addEventListener('click', function() {
+                var product = button.closest('.product');
                 var name = button.getAttribute('data-name');
                 var price = parseFloat(button.getAttribute('data-price'));
-                var quantity = parseInt(button.previousElementSibling.previousElementSibling.value);
-                var size = button.previousElementSibling.value;
+                var quantity = parseInt(product.querySelector('.quantity').value);
+                var size = product.querySelector('.size').value;
+                var id = product.getAttribute('data-id');
 
-                // Add item to cart
-                cart.push({name: name, price: price, quantity: quantity, size: size});
+                // Add product to the cart array
+                var cartItem = { id, name, price, quantity, size, totalPrice: price * quantity };
+                cart.push(cartItem);
                 updateCart();
             });
         });
@@ -164,12 +167,12 @@
                 cartItem.innerHTML = `
                     <span>${item.name} - ${item.size}</span>
                     <span>Qty: ${item.quantity}</span>
-                    <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                    <span>$${item.totalPrice.toFixed(2)}</span>
                     <button class="remove-item" data-index="${index}">Remove</button>
                 `;
                 cartItemsContainer.appendChild(cartItem);
 
-                total += item.price * item.quantity;
+                total += item.totalPrice;
             });
 
             totalElement.textContent = 'Total: $' + total.toFixed(2);
@@ -238,4 +241,5 @@
     </script>
 </body>
 </html>
+
 
