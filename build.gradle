@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Stripe Java SDK
+    implementation 'com.stripe:stripe-java:28.0.0'
+    
+    // Spark Framework
+    implementation 'com.sparkjava:spark-core:2.9.3'
+    
+    // Gson for JSON handling
+    implementation 'com.google.code.gson:gson:2.8.8'
+}
